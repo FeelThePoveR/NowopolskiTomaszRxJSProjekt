@@ -1,0 +1,22 @@
+{
+  "name": "nowopolskitomaszrxjsprojekt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --mode development"
+  },
+  "author": "Nowopolski Tomasz",
+  "license": "ISC",
+  "dependencies": {
+    "rxjs": "^6.5.4",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-dev-server": "^3.10.2"
+  },
+  "devDependencies": {
+    "css-loader": "^3.4.2",
+    "webpack-cli": "^3.3.10"
+  }
+}
