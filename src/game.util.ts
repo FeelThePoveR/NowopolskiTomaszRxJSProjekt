@@ -82,9 +82,9 @@ export const runBallPaddleCheck = (ball : any, paddle : any) : string => {
 }
 export const runBallBrickCheck = (ball : any, brick : any) : string => {
   let brickHit = '';
-/*
+
   if (ball.y + ball.radius >= brick.y && ball.y - ball.radius <= brick.y + brick.height) {
-    if(brick.x < ball.x + ball.radius){                                                     //left
+    if(brick.x < ball.x + ball.radius){                                                   
       console.log("brick stage 2");
       if(brick.x + brick.width > ball.x - ball.radius){
           console.log("hit brick top");
@@ -92,7 +92,7 @@ export const runBallBrickCheck = (ball : any, brick : any) : string => {
       }
     }
   }
-*/
+
   if (ball.y - ball.radius <= brick.y + brick.height) {
     if(brick.x < ball.x + ball.radius){
       console.log("brick stage 2");
@@ -102,14 +102,14 @@ export const runBallBrickCheck = (ball : any, brick : any) : string => {
       }
     }
   }
-/*
-  if(brick.x < ball.x + ball.radius){
+
+  if(brick.x > ball.x + ball.radius && brick.x < ball.x + ball.radius){
     console.log("brick stage 2");
     if(ball.y + ball.radius >= brick.y && ball.y - ball.radius <= brick.y + brick.height){
-        console.log("hit brick left");
+        console.log("hit brick left or right");
         brickHit = 'left';
     }
   }
-*/
+
   return brickHit;
 }

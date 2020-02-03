@@ -184,10 +184,12 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
         (state['ball'])[0].velocity.y *= -bounceRateChanges[didHit];
       }
     }
-    state['brick'].forEach((obj : any) =>{
+    state['brick'].forEach((obj : any, index : any) =>{
       const didScore = runBallBrickCheck((state['ball'])[0], obj);
       if(didScore){
         (state['ball'])[0].velocity.y *= -bounceRateChanges[didScore];
+        (state['brick']).splice(index, 1);
+        console.log(index);
       }
 
     })
