@@ -50,23 +50,7 @@ export const runBallBoundaryCheck = (obj: any, boundaries: {top: number, right: 
 
 export const runBallPaddleCheck = (ball : any, paddle : any) : string => {
   let paddleHit = '';
-/*
-  if (ball[0].x + ball[0].radius <= paddle[0].x + paddle[0].width) {
-    paddleHit = 'right';
 
-    console.log("hit right")
-  } else if (ball[0].x - ball[0].radius < paddle[0].x) {
-    paddleHit = 'left';
-
-    console.log("hit left")
-  }
-  if(ball[0].y + ball[0].radius >= paddle[0].x) {        
-    //obj.velocity.y *= -bounceRateChanges.bottom;
-    paddleHit = 'bottom';
-
-    console.log("hit bottom")
-  } else 
-  */
   if (ball[0].y + ball[0].radius >= paddle[0].y) {
     console.log("stage 1");
     if(paddle[0].x < ball[0].x + ball[0].radius){
@@ -75,6 +59,14 @@ export const runBallPaddleCheck = (ball : any, paddle : any) : string => {
           console.log("hit top");
           paddleHit = 'top';
       }
+    }
+  }
+
+  if(paddle[0].x > ball[0].x + ball[0].radius && paddle[0].x < ball[0].x + ball[0].radius){
+    console.log("stage 2");
+    if(ball[0].y + ball[0].radius >= paddle[0].y && ball[0].y - ball[0].radius <= paddle[0].y + paddle[0].height){
+        console.log("hit left or right");
+        paddleHit = 'left';
     }
   }
 

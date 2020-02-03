@@ -69,6 +69,12 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
     }
   } else {
 
+    fps.textContent = state['brick'].length;
+    if (!state['brick'].length) { 
+      gameState$.unsubscribe();
+      endGame('CONGRATULATIONS! \nYou Win!');
+    }
+
     state['objects'].forEach((obj : any) => {
       if (inputState['spacebar_down']) {
         obj.isPaused = !obj.isPaused;
@@ -168,8 +174,12 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
         if(didHit){
           if(didHit === 'right' || didHit === 'left') {
             obj.velocity.x *= -bounceRateChanges[didHit];
-          } else {
+          } else if(didHit === 'top'){
             obj.velocity.y *= -bounceRateChanges[didHit];
+          }
+          else{
+            gameState$.unsubscribe();
+            endGame('YOU LOST!');
           }
         }
       }
@@ -298,18 +308,13 @@ frames$
     render(gameState);
   });
 
-frames$ 
-  .pipe(
-    bufferCount(10),
-    map((frames) => {
-      const total = frames
-        .reduce((acc, curr) => {
-          acc += curr;
-          return acc;
-        }, 0);
 
-        return 1/(total/frames.length);
-    })
-  ).subscribe((avg) => {
-    fps.innerHTML = Math.round(avg) + '';
-  })
+
+function endGame(text : string) {
+  const ctx: CanvasRenderingContext2D = (<HTMLCanvasElement>gameArea).getContext('2d');
+  ctx.clearRect(0, 0, gameArea.clientWidth, gameArea.clientHeight);
+
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 28px Arial';
+  ctx.fillText(text, gameArea.clientWidth / 2, gameArea.clientHeight / 2);
+}
