@@ -69,10 +69,10 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
     }
   } else {
 
-    fps.textContent = state['brick'].length;
+    fps.textContent = "Ilość pozostałych bloków: " + state['brick'].length;
     if (!state['brick'].length) { 
       gameState$.unsubscribe();
-      endGame('CONGRATULATIONS! \nYou Win!');
+      endGame('YOU WON!');
     }
 
     state['objects'].forEach((obj : any) => {
@@ -83,14 +83,12 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
         obj.color = newColor;        
       }
       else if (inputState['left_arrow_down']) {
-        obj.isPaused = true;
         obj.turnLeft = true;
         let newColor = obj.turnColor;        
         obj.toggleColor = obj.color;
         obj.color = newColor;        
       }
        else if (inputState['right_arrow_down']) {
-        obj.isPaused = true;
         obj.turnRight = true;
         let newColor = obj.turnColor;      
         obj.toggleColor = obj.color;
@@ -98,14 +96,12 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
       }
       else{
         if(inputState['left_arrow_up']){
-          obj.isPaused = false;
           obj.turnLeft = false;
           let newColor = obj.turnColor;        
           obj.toggleColor = obj.color;
           obj.color = newColor;   
         }
         else if(inputState['right_arrow_up']){
-          obj.isPaused = false;
           obj.turnRight = false;
           let newColor = obj.turnColor;        
           obj.toggleColor = obj.color;
@@ -114,48 +110,34 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
       }
 
       if(!obj.isPaused) {
+        if(obj.turnLeft) {
 
-        obj.x = obj.x += obj.velocity.x*deltaTime;
-        obj.y = obj.y += obj.velocity.y*deltaTime;  
-
-        const didHit = runBoundaryCheck(obj, boundaries);
-        if(didHit){
-          if(didHit === 'right' || didHit === 'left') {
-            obj.velocity.x *= -bounceRateChanges[didHit];
-          } else {
-            obj.velocity.y *= -bounceRateChanges[didHit];
+          obj.x = obj.x -= baseObjectVelocity.maxX*deltaTime;
+  
+          const didHit = runBoundaryCheck(obj, boundaries);
+          if(didHit){
+            if(didHit === 'right' || didHit === 'left') {
+              obj.velocity.x = 0;
+            } else {
+              obj.velocity.y = 0;
+            }
           }
         }
-      }
-
-      if(obj.turnLeft) {
-
-        obj.x = obj.x -= baseObjectVelocity.maxX*deltaTime;
-
-        const didHit = runBoundaryCheck(obj, boundaries);
-        if(didHit){
-          if(didHit === 'right' || didHit === 'left') {
-            obj.velocity.x *= -bounceRateChanges[didHit];
-          } else {
-            obj.velocity.y *= -bounceRateChanges[didHit];
-          }
-        }
-      }
-
-      if(obj.turnRight) {
-
-        obj.x = obj.x += baseObjectVelocity.maxX*deltaTime;
-
-        const didHit = runBoundaryCheck(obj, boundaries);
-        if(didHit){
-          if(didHit === 'right' || didHit === 'left') {
-            obj.velocity.x *= -bounceRateChanges[didHit];
-          } else {
-            obj.velocity.y *= -bounceRateChanges[didHit];
+  
+        if(obj.turnRight) {
+  
+          obj.x = obj.x += baseObjectVelocity.maxX*deltaTime;
+  
+          const didHit = runBoundaryCheck(obj, boundaries);
+          if(didHit){
+            if(didHit === 'right' || didHit === 'left') {
+              obj.velocity.x = 0;
+            }
           }
         }
       }
     });
+      
     
     state['ball'].forEach((obj : any) => {
       if (inputState['spacebar_down']) {
@@ -244,7 +226,7 @@ const calculateStep: (prevFrame: IFrameData) => Observable<IFrameData> = (prevFr
   )
 };
 
-const frames$ = of(undefined)
+var frames$ = of(undefined)
   .pipe(
     expand((val) => calculateStep(val)),
     filter(frame => frame !== undefined),
@@ -295,7 +277,7 @@ const keysDownPerFrame$ = keysDown$
     })
   );
 
-const gameState$ = new BehaviorSubject({});
+var gameState$ = new BehaviorSubject({});
 
 frames$
   .pipe(
@@ -317,4 +299,36 @@ function endGame(text : string) {
   ctx.textAlign = 'center';
   ctx.font = 'bold 28px Arial';
   ctx.fillText(text, gameArea.clientWidth / 2, gameArea.clientHeight / 2);
+
+  document.getElementById("restart").style.display = "block";
+}
+
+
+document.getElementById("restart").addEventListener("click", restart);
+
+
+function restart(){
+  gameState$.unsubscribe();
+  gameState$ = new BehaviorSubject({});
+
+  frames$ = of(undefined)
+  .pipe(
+    expand((val) => calculateStep(val)),
+    filter(frame => frame !== undefined),
+    map((frame: IFrameData) => frame.deltaTime),
+    share()
+  );
+  
+  frames$
+  .pipe(
+    withLatestFrom(keysDownPerFrame$, gameState$),
+    map(([deltaTime, keysDown, gameState]) => update(deltaTime, gameState, keysDown)),
+    tap((gameState) => gameState$.next(gameState))
+   
+  )
+  .subscribe((gameState) => {
+    render(gameState);
+  });
+
+  document.getElementById("restart").style.display = "none";
 }
