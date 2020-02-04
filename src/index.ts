@@ -72,7 +72,7 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
     fps.textContent = "Ilość pozostałych bloków: " + state['brick'].length;
     if (!state['brick'].length) { 
       gameState$.unsubscribe();
-      endGame('YOU WON!');
+      endGame('Wygrałeś!');
     }
 
     state['objects'].forEach((obj : any) => {
@@ -161,7 +161,7 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
           }
           else{
             gameState$.unsubscribe();
-            endGame('YOU LOST!');
+            endGame('Przegrałeś!');
           }
         }
       }
