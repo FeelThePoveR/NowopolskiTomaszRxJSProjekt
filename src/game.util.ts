@@ -52,21 +52,22 @@ export const runBallPaddleCheck = (ball : any, paddle : any) : string => {
   let paddleHit = '';
 
   if (ball[0].y + ball[0].radius >= paddle[0].y) {
-    console.log("stage 1");
-    if(paddle[0].x < ball[0].x + ball[0].radius){
-      console.log("stage 2");
-      if(paddle[0].x + paddle[0].width > ball[0].x - ball[0].radius){
-          console.log("hit top");
-          paddleHit = 'top';
+    if(paddle[0].x <= ball[0].x + ball[0].radius + 1){
+      if(paddle[0].x + paddle[0].width >= ball[0].x - ball[0].radius - 1){
+        paddleHit = 'top';
       }
     }
   }
 
-  if(paddle[0].x > ball[0].x + ball[0].radius && paddle[0].x < ball[0].x + ball[0].radius){
-    console.log("stage 2");
-    if(ball[0].y + ball[0].radius >= paddle[0].y && ball[0].y - ball[0].radius <= paddle[0].y + paddle[0].height){
-        console.log("hit left or right");
-        paddleHit = 'left';
+  if(paddle[0].x - 5 >= ball[0].x + ball[0].radius && paddle[0].x <= ball[0].x + ball[0].radius + 1){
+    if(ball[0].y + ball[0].radius >= paddle[0].y - 1){
+      paddleHit = 'left';
+    }
+  }
+
+  if(paddle[0].x + paddle[0].width - 1 >= ball[0].x - ball[0].radius && paddle[0].x + paddle[0].width <= ball[0].x - ball[0].radius + 5){
+    if(ball[0].y + ball[0].radius >= paddle[0].y - 1){
+      paddleHit = 'right';
     }
   }
 
@@ -77,9 +78,7 @@ export const runBallBrickCheck = (ball : any, brick : any) : string => {
 
   if (ball.y + ball.radius >= brick.y && ball.y - ball.radius <= brick.y + brick.height) {
     if(brick.x < ball.x + ball.radius){                                                   
-      console.log("brick stage 2");
       if(brick.x + brick.width > ball.x - ball.radius){
-          console.log("hit brick top");
           brickHit = 'top';
       }
     }
@@ -87,19 +86,21 @@ export const runBallBrickCheck = (ball : any, brick : any) : string => {
 
   if (ball.y - ball.radius <= brick.y + brick.height) {
     if(brick.x < ball.x + ball.radius){
-      console.log("brick stage 2");
       if(brick.x + brick.width > ball.x + ball.radius){
-          console.log("hit brick bottom");
           brickHit = 'bottom';
       }
     }
   }
 
-  if(brick.x > ball.x + ball.radius && brick.x < ball.x + ball.radius){
-    console.log("brick stage 2");
+  if(brick.x == ball.x + ball.radius){
     if(ball.y + ball.radius >= brick.y && ball.y - ball.radius <= brick.y + brick.height){
-        console.log("hit brick left or right");
         brickHit = 'left';
+    }
+  }
+
+  if(brick.x + brick.width == ball.x - ball.radius){
+    if(ball.y + ball.radius >= brick.y && ball.y - ball.radius <= brick.y + brick.height){
+        brickHit = 'right';
     }
   }
 

@@ -58,12 +58,10 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
 
     for(var i=0; i<=3; i++){
       for(var j=0; j<=10; j++){
-        console.log(brick_number);
         (state['brick'])[brick_number] =
           {
             x: 10+10*j*3.5, y: 10+10*i*3.5, width: 30, height: 30, color: '#FF0000', 
           }
-          console.log((state['brick'])[brick_number]);
           brick_number++;
         }
     }
@@ -175,13 +173,15 @@ const update = (deltaTime: number, state: any, inputState: any): any => {
       if(didHit === 'top'){
         (state['ball'])[0].velocity.y *= -bounceRateChanges[didHit];
       }
+      else if(didHit === 'left' || 'right'){
+        (state['ball'])[0].velocity.x *= -bounceRateChanges[didHit];
+      }
     }
     state['brick'].forEach((obj : any, index : any) =>{
       const didScore = runBallBrickCheck((state['ball'])[0], obj);
       if(didScore){
         (state['ball'])[0].velocity.y *= -bounceRateChanges[didScore];
         (state['brick']).splice(index, 1);
-        console.log(index);
       }
 
     })
@@ -242,7 +242,6 @@ const keysDown$ = merge(
         if (name !== ''){
           let keyMap : any = {};
           keyMap[name + "_down"] = event.code + "_down";
-          console.log(keyMap);
           return keyMap;
         } else {
           return undefined;
@@ -257,7 +256,6 @@ const keysDown$ = merge(
         if (name !== ''){
           let keyMap : any = {};
           keyMap[name + "_up"] = event.code + "_up";
-          console.log(keyMap);
           return keyMap;
         } else {
           return undefined;
