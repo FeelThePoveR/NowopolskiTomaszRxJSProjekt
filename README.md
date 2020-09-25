@@ -2,7 +2,7 @@
 
 Gra o tytule breakout zbudowana w frameworku RxJS.
 
-By uruchomić serwer, wpisz w konsoli 'npm start'. Domyślnie serwer uruchamia się na 'http://localhost:8080/'
+By uruchomić serwer, należy wpisać w konsoli 'npm start'. Domyślnie serwer uruchamia się na 'http://localhost:8080/'
 
 
 Autor: Tomasz Nowopolski
